@@ -1,100 +1,81 @@
 <script setup>
-import Checkbox from '@/Components/Checkbox.vue';
-import GuestLayout from '@/Layouts/GuestLayout.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
-
-defineProps({
-    canResetPassword: {
-        type: Boolean,
-    },
-    status: {
-        type: String,
-    },
-});
+import { Link, Head, useForm } from '@inertiajs/vue3';
 
 const form = useForm({
-    email: '',
-    password: '',
-    remember: false,
+  email: '',
+  password: '',
+  remember: false,
 });
 
 const submit = () => {
-    form.post(route('login'), {
-        onFinish: () => form.reset('password'),
-    });
+  form.post(route('login'), {
+    onFinish: () => form.reset('password'),
+  });
 };
 </script>
 
 <template>
-    <GuestLayout>
-        <Head title="Log in" />
+  <div class="min-h-screen bg-stone-50 flex flex-col items-center justify-center px-4">
+    <Head title="Log in" />
+    
+    <!-- Logo Utara -->
+    <div class="flex items-center gap-3 mb-12 cursor-pointer select-none">
+      <span class="text-4xl font-bold border-2 rounded px-3 py-1 text-emerald-700">北</span>
+      <span class="text-4xl font-bold text-emerald-700 tracking-widest">UTARA</span>
+    </div>
 
-        <div v-if="status" class="mb-4 text-sm font-medium text-green-600">
-            {{ status }}
+    <!-- Login Box -->
+    <div class="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
+      <h2 class="text-3xl font-bold text-gray-900 mb-6 text-center">Welcome Back</h2>
+
+      <form @submit.prevent="submit" class="space-y-6">
+        <div>
+          <label for="email" class="block text-gray-700 font-semibold mb-1">Email</label>
+          <input
+            id="email"
+            type="email"
+            v-model="form.email"
+            required
+            autofocus
+            autocomplete="username"
+            class="w-full border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          />
+          <p v-if="form.errors.email" class="text-red-600 mt-1 text-sm">{{ form.errors.email }}</p>
         </div>
 
-        <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="email" value="Email" />
+        <div>
+          <label for="password" class="block text-gray-700 font-semibold mb-1">Password</label>
+          <input
+            id="password"
+            type="password"
+            v-model="form.password"
+            required
+            autocomplete="current-password"
+            class="w-full border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          />
+          <p v-if="form.errors.password" class="text-red-600 mt-1 text-sm">{{ form.errors.password }}</p>
+        </div>
 
-                <TextInput
-                    id="email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    v-model="form.email"
-                    required
-                    autofocus
-                    autocomplete="username"
-                />
+        <div class="flex items-center justify-between">
+          <label class="inline-flex items-center gap-2 text-gray-700">
+            <input type="checkbox" v-model="form.remember" class="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500" />
+            Remember me
+          </label>
+          <Link href="#" class="text-sm text-emerald-600 hover:text-emerald-800">Forgot Password?</Link>
+        </div>
 
-                <InputError class="mt-2" :message="form.errors.email" />
-            </div>
+        <button
+          type="submit"
+          :disabled="form.processing"
+          class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg py-3 transition disabled:opacity-50"
+        >
+          Log in
+        </button>
+      </form>
+    </div>
 
-            <div class="mt-4">
-                <InputLabel for="password" value="Password" />
-
-                <TextInput
-                    id="password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    v-model="form.password"
-                    required
-                    autocomplete="current-password"
-                />
-
-                <InputError class="mt-2" :message="form.errors.password" />
-            </div>
-
-            <div class="mt-4 block">
-                <label class="flex items-center">
-                    <Checkbox name="remember" v-model:checked="form.remember" />
-                    <span class="ms-2 text-sm text-gray-600"
-                        >Remember me</span
-                    >
-                </label>
-            </div>
-
-            <div class="mt-4 flex items-center justify-end">
-                <Link
-                    v-if="canResetPassword"
-                    :href="route('password.request')"
-                    class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                >
-                    Forgot your password?
-                </Link>
-
-                <PrimaryButton
-                    class="ms-4"
-                    :class="{ 'opacity-25': form.processing }"
-                    :disabled="form.processing"
-                >
-                    Log in
-                </PrimaryButton>
-            </div>
-        </form>
-    </GuestLayout>
+    <p class="mt-8 text-gray-600 text-center text-sm">
+      &copy; 2025 Utara Coffee. All rights reserved.
+    </p>
+  </div>
 </template>
